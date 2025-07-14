@@ -22,11 +22,26 @@ app.use(helmet({
 
 // CORS configuration
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? (process.env.FRONTEND_URL || 'https://your-frontend-domain.vercel.app').split(',')
+  ? (process.env.FRONTEND_URL || 'https://slidinggroup-visual-voyage.vercel.app').split(',').concat(['https://slidinggroup-visual-voyage-git-main-slidinggroups.vercel.app'])
   : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080', 'http://localhost:8081', 'http://127.0.0.1:5173', 'http://127.0.0.1:8080'];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is in allowed origins or is a Vercel deployment
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow localhost in development
+    if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key']
