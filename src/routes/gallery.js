@@ -132,7 +132,7 @@ router.get('/stats', async (req, res) => {
 // Middleware for admin authentication
 const adminAuth = (req, res, next) => {
   const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== process.env.ADMIN_KEY && process.env.NODE_ENV === 'production') {
+  if (adminKey !== process.env.ADMIN_API_KEY && process.env.NODE_ENV === 'production') {
     return res.status(401).json({
       success: false,
       error: 'Unauthorized: Admin access required'

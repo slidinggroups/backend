@@ -9,7 +9,7 @@ const adminAuth = (req, res, next) => {
   // TODO: Implement proper JWT authentication
   // For now, just check for a simple admin header
   const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== process.env.ADMIN_KEY && process.env.NODE_ENV === 'production') {
+  if (adminKey !== process.env.ADMIN_API_KEY && process.env.NODE_ENV === 'production') {
     return res.status(401).json({
       success: false,
       error: 'Unauthorized: Admin access required'
